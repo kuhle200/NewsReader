@@ -16,11 +16,13 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private RecyclerView recyclerView;
+    ArrayList<NewsItem> news;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         recyclerView = findViewById(R.id.recyclerView);
+        news = new ArrayList<>();
 
     }
 
@@ -111,15 +114,14 @@ public class MainActivity extends AppCompatActivity {
                                 date = getContent(parser, "pubdate");
 
                             }else {
-                                // TODO: 2023/05/04 skip the tag
                                 skipTag(parser);
                             }
 
                         }
-
+                        NewsItem item = new NewsItem(title,description,link,date);
+                        news.add(item);
 
                     }else{
-                        // TODO: 2023/05/04 skip tag
                         skipTag(parser);
                     }
 
