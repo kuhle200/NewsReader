@@ -99,19 +99,20 @@ public class MainActivity extends AppCompatActivity {
 
                             String tagName = parser.getName();
                             if(tagName.equals("title")){
-                                // TODO: 2023/05/04 get content
+                                title = getContent(parser, "title");
 
                             }else if (tagName.equals("description")){
-                                // TODO: 2023/05/04 get content
+                                description = getContent(parser, "description");
 
                             }else if(tagName.equals("link")){
-                                // TODO: 2023/05/04 get content
+                                link = getContent(parser, "link");
 
                             }else if (tagName.equals("pubdate")){
-                                // TODO: 2023/05/04 get content
+                                date = getContent(parser, "pubdate");
 
                             }else {
                                 // TODO: 2023/05/04 skip the tag
+                                skipTag(parser);
                             }
 
                         }
@@ -119,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }else{
                         // TODO: 2023/05/04 skip tag
+                        skipTag(parser);
                     }
 
                 }
@@ -127,6 +129,41 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        private String getContent(XmlPullParser parser, String tagName) throws XmlPullParserException, IOException {
+            String content ="";
+            parser.require(XmlPullParser.START_TAG, null, tagName);
+
+            if(parser.next() == XmlPullParser.TEXT){
+                content = parser.getText();
+                parser.next();
+            }
+            return content;
+        }
+
+        private void skipTag(XmlPullParser parser) throws XmlPullParserException, IOException {
+            if (parser.getEventType() != XmlPullParser.START_TAG){
+                throw new IllegalStateException();
+            }
+
+            int number = 1;
+
+            while (number !=0){
+                switch (parser.next()){
+
+                    case(XmlPullParser.START_TAG):
+                        number++;
+                        break;
+
+                    case(XmlPullParser.END_TAG):
+                        number--;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+
+        }
     }
 
 }
