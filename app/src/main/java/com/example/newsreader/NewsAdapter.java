@@ -43,8 +43,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(context, )
-                // TODO: 2023/05/04 navigate user to website activity 
+                Intent intent = new Intent(context, WebsiteActivity.class);
+                intent.putExtra("url", newsItems.get(holder.getAdapterPosition()).getLink());
+                context.startActivity(intent);
+
             }
         });
     }
