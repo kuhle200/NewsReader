@@ -1,6 +1,7 @@
 package com.example.newsreader;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
@@ -22,7 +23,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private RecyclerView recyclerView;
-    ArrayList<NewsItem> news;
+    private NewsAdapter newsAdapter;
+    private ArrayList<NewsItem> news;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +33,11 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         news = new ArrayList<>();
+        newsAdapter = new NewsAdapter(this);
+        recyclerView.setAdapter(newsAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        new GetNews().execute();
     }
 
     private class GetNews extends AsyncTask<Void,Void,Void>{
@@ -49,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+            newsAdapter.setNewsItems(news);
         }
 
         private InputStream getInputStream(){
