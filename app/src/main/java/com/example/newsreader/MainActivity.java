@@ -103,9 +103,7 @@ public class MainActivity extends AppCompatActivity {
                         parser.require(XmlPullParser.START_TAG, null, "item");
 
                         String title = "";
-                        String description = "";
                         String link = "";
-                        String date = "";
 
                         while (parser.next() != XmlPullParser.END_TAG){
                             if(parser.getEventType() != XmlPullParser.START_TAG){
@@ -116,21 +114,15 @@ public class MainActivity extends AppCompatActivity {
                             if(tagName.equals("title")){
                                 title = getContent(parser, "title");
 
-                            }else if (tagName.equals("description")){
-                                description = getContent(parser, "description");
-
                             }else if(tagName.equals("link")){
                                 link = getContent(parser, "link");
-
-                            }else if (tagName.equals("pubdate")){
-                                date = getContent(parser, "pubdate");
 
                             }else {
                                 skipTag(parser);
                             }
 
                         }
-                        NewsItem item = new NewsItem(title,description,link,date);
+                        NewsItem item = new NewsItem(title,link);
                         news.add(item);
 
                     }else{

@@ -36,10 +36,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.titleTextView.setText(newsItems.get(position).getTitle());
-        holder.descriptionTextView.setText(newsItems.get(position).getDescription());
-        holder.dateTextView.setText(newsItems.get(position).getDate());
 
+        holder.titleTextView.setText(newsItems.get(position).getTitle());
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,15 +56,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView titleTextView, descriptionTextView, dateTextView;
+        private TextView titleTextView;
         private CardView parent;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             titleTextView = itemView.findViewById(R.id.titleTextView);
-            descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
-            dateTextView = itemView.findViewById(R.id.dateTextView);
             parent = itemView.findViewById(R.id.parent);
         }
     }
