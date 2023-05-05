@@ -31,12 +31,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Initialize RecyclerView and NewsAdapter
         recyclerView = findViewById(R.id.recyclerView);
         news = new ArrayList<>();
         newsAdapter = new NewsAdapter(this);
         recyclerView.setAdapter(newsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Initialize RecyclerView and NewsAdapter
         new GetNews().execute();
     }
 
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
             if(inputStream != null){
                 try {
+                    // Initialize XML Pull Parser to parse RSS feed data
                     initXMLPullParser(inputStream);
                 } catch (XmlPullParserException | IOException e) {
                     e.printStackTrace();
@@ -60,16 +63,20 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void unused) {
             super.onPostExecute(unused);
+            // Update NewsAdapter with news data
             newsAdapter.setNewsItems(news);
         }
 
         private InputStream getInputStream(){
 
             try {
+                // Create URL object for RSS feed
                 URL url = new URL("https://hnrss.org/newest");
+                // Open HTTP connection and set request method
                 HttpURLConnection connection = (HttpURLConnection)url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setDoInput(true);
+                // Get input stream from connection
                 return connection.getInputStream();
 
             } catch (IOException e) {
@@ -81,11 +88,13 @@ public class MainActivity extends AppCompatActivity {
         private void initXMLPullParser(InputStream inputStream) throws XmlPullParserException, IOException {
             Log.d(TAG, "initializing XML Pull Parser");
 
+            // Create XmlPullParser object and initialize it with input stream
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES,false);
             parser.setInput(inputStream,null);
             parser.next();
 
+            // Require the start tag for "rss" element
             parser.require(XmlPullParser.START_TAG, null, "rss");
 
             while (parser.next() != XmlPullParser.END_TAG){
@@ -93,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                     continue;
                 }
 
+                // Require the start tag for "channel" element
                 parser.require(XmlPullParser.START_TAG, null, "channel");
                 while (parser.next() != XmlPullParser.END_TAG){
                     if(parser.getEventType() != XmlPullParser.START_TAG){
@@ -100,29 +110,30 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if(parser.getName().equals("item")){
+                        //Require the start tag for "item" element
                         parser.require(XmlPullParser.START_TAG, null, "item");
 
-                        String title = "";
-                        String link = "";
+                        String title = ""; // String to store title of the news item
+                        String link = "";  // String to store link of the website of
 
                         while (parser.next() != XmlPullParser.END_TAG){
                             if(parser.getEventType() != XmlPullParser.START_TAG){
                                 continue;
                             }
 
-                            String tagName = parser.getName();
+                            String tagName = parser.getName(); //string to store the target tags
                             if(tagName.equals("title")){
-                                title = getContent(parser, "title");
+                                title = getContent(parser, "title"); //collecting the title of the Item
 
                             }else if(tagName.equals("link")){
-                                link = getContent(parser, "link");
+                                link = getContent(parser, "link");  //collecting the link of the item
 
                             }else {
-                                skipTag(parser);
+                                skipTag(parser); //skip tags that are not item
                             }
 
                         }
-                        NewsItem item = new NewsItem(title,link);
+                        NewsItem item = new NewsItem(title,link); //Creating a new NewsItem after collecting the data required
                         news.add(item);
 
                     }else{
@@ -137,8 +148,10 @@ public class MainActivity extends AppCompatActivity {
 
         private String getContent(XmlPullParser parser, String tagName) throws XmlPullParserException, IOException {
             String content ="";
+            // Require the start tag for element
             parser.require(XmlPullParser.START_TAG, null, tagName);
 
+            //Only collect content of the tag if next item in the parser is text
             if(parser.next() == XmlPullParser.TEXT){
                 content = parser.getText();
                 parser.next();
@@ -151,17 +164,17 @@ public class MainActivity extends AppCompatActivity {
                 throw new IllegalStateException();
             }
 
-            int number = 1;
+            int number = 1; //tracker
 
             while (number !=0){
                 switch (parser.next()){
 
                     case(XmlPullParser.START_TAG):
-                        number++;
+                        number++; //increment when encounter START_TAG
                         break;
 
                     case(XmlPullParser.END_TAG):
-                        number--;
+                        number--; //decrement when encounter END_TAG
                         break;
                     default:
                         break;

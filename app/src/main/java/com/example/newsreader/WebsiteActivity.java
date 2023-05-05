@@ -9,6 +9,7 @@ import android.webkit.WebViewClient;
 
 public class WebsiteActivity extends AppCompatActivity {
 
+    // WebView to display the website
     private WebView webView;
 
     @Override
@@ -16,11 +17,18 @@ public class WebsiteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_website);
 
+        // Get the intent that started this activity
         Intent intent = getIntent();
+
+        // Check if the intent is not null
         if(intent != null){
+            // Get the URL from the intent extra
             String url = intent.getStringExtra("url");
+            // Check if the URL is not null
             if(url != null){
+                // Find the WebView in the layout and set it up
                 webView = findViewById(R.id.webView);
+                // Set WebViewClient so the website will be opened inside the app
                 webView.setWebViewClient(new WebViewClient());
                 webView.getSettings().setJavaScriptEnabled(true);
                 webView.loadUrl(url);
@@ -31,10 +39,12 @@ public class WebsiteActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // Check if the WebView can go back, go back
         if(webView.canGoBack()){
             getObbDir();
         }else {
-        super.onBackPressed();
+            // Otherwise, call the parent implementation
+            super.onBackPressed();
         }
     }
 }
